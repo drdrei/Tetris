@@ -1,7 +1,7 @@
 Exercise 5 Project Proposal
 ---------------------------
 
-Names: Andrei Usenka and Niko Somos (TR Section)
+Names: Andrei and Niko (TR Section)
 ---------------------------
 
 Project: Tetris
