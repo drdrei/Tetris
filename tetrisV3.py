@@ -2,10 +2,6 @@ from random import *
 import pygame
 import sys
 
-class Tracker:
-	def __init__(self, x = 5, y = 0):
-		self.x = x
-		self.y = y
 
 class Shape:
 	def __init__(self, shape_id = 0):
@@ -24,7 +20,8 @@ class Shape:
 		self.blockrect = self.block.get_rect()
 
 	def update_shape(self):
-		if self.shape_id == 0 and self.rotation % 2 == 0:
+		# I
+		if self.shape_id == 0 and self.rotation % 4 == 0 or self.rotation % 4 == 2:
 			self.shape =["00200",
 						 "00200",
 						 "00200",
@@ -36,6 +33,39 @@ class Shape:
 				 		 "22220",
 				 		 "00000",
 				 		 "00000"]
+		# Cube
+		if self.shape_id == 1:
+			self.shape =["00000",
+						"02200",
+						"02200",
+						"00000",
+						"00000",]
+		# Backwards L
+		if self.shape_id == 2 and self.rotation % 4 == 0:
+			self.shape =["00200",
+						"00200",
+						"02200",
+						"00000",
+						"00000"]
+		elif self.shape_id == 2 and self.rotation % 4 == 1:
+			self.shape =["00000",
+						"00000",
+						"22200",
+						"00200",
+						"00000"]
+		elif self.shape_id == 2 and self.rotation % 4 == 2:
+			self.shape =["00000",
+						"00000",
+						"00220",
+						"00200",
+						"00200"]
+		elif self.shape_id == 2 and self.rotation % 4 == 3:
+			self.shape =["00000",
+						"00200",
+						"00222",
+						"00000",
+						"00000"]
+						
 		# clear x and y locations before adding new coordinates
 		self.x = []
 		self.y = []
@@ -51,6 +81,9 @@ class Shape:
 		self.check_bounds()
 		for index, item in enumerate(self.x):
 			screen.blit(self.block, (self.x[index]*20, self.y[index]*20))
+
+	def rotate(self, matrix):
+		self.rotation += 1
 
 	def move_down(self, matrix):
 		self.test_y(matrix)
@@ -80,10 +113,6 @@ class Shape:
 			self.x = [i-1 for i in self.x]
 			self.collision = 0
 
-	def rotate(self, matrix):
-		self.rotation += 1
-		self.rotation_test(matrix)
-
 	def reset_tracker(self):
 		self.track_x = 5
 		self.track_y = 0
@@ -112,7 +141,7 @@ class Shape:
 			for ind, i in enumerate(y_test):
 				if matrix[y_test[ind]][self.x[ind]] == 1:
 					self.collision = 1
-		except:
+		except IndexError:
 			pass
 
 	def test_left(self, matrix):
@@ -121,7 +150,7 @@ class Shape:
 			for ind, i in enumerate(x_test):
 				if matrix[self.y[ind]][x_test[ind]] == 1:
 					self.collision = 1
-		except:
+		except IndexError:
 			pass
 
 	def test_right(self, matrix):
@@ -130,7 +159,7 @@ class Shape:
 			for ind, i in enumerate(x_test):
 				if matrix[self.y[ind]][x_test[ind]] == 1:
 					self.collision = 1
-		except:
+		except IndexError:
 			pass
 
 	def rotation_test(self, matrix):
@@ -139,11 +168,10 @@ class Shape:
 			for ind, coord in enumerate(self.x):
 				if matrix[self.y[ind]][self.x[ind]] == 1:
 					rotation_error = 1
-					print(rotation_error)
 			if rotation_error == 1:
 				self.rotation -= 1
 				self.update_shape()
-		except:
+		except IndexError:
 			pass
 
 
@@ -209,7 +237,7 @@ screen = pygame.display.set_mode(size)
 pygame.display.set_caption('TETRIS')
 
 # creates a new shape: 0 is the shape id
-shape = Shape()
+shape = Shape(randint(0,2))
 shape.update_shape()
 
 # build a matrix for from the width and height
@@ -222,7 +250,7 @@ while 1:
 	time = pygame.time.get_ticks()
 
 	if shape.state == 1:
-		shape = Shape()
+		shape = Shape(randint(0,2))
 	
 	if init < time:
 		shape.move_down(area.matrix())
