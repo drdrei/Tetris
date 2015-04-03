@@ -45,8 +45,9 @@ class Shape:
 					self.y.append(row_ind + self.track_y)
 					self.x.append(col_ind-2 + self.track_x)
 
-	def draw_shape(self):
+	def draw_shape(self, matrix):
 		self.update_shape()
+		self.rotation_test(matrix)
 		self.check_bounds()
 		for index, item in enumerate(self.x):
 			screen.blit(self.block, (self.x[index]*20, self.y[index]*20))
@@ -82,9 +83,6 @@ class Shape:
 	def rotate(self, matrix):
 		self.rotation += 1
 		self.rotation_test(matrix)
-		
-
-
 
 	def reset_tracker(self):
 		self.track_x = 5
@@ -138,14 +136,13 @@ class Shape:
 	def rotation_test(self, matrix):
 		try:
 			rotation_error = 0
-			for row, row_items in enumerate(matrix):
-				for column, item in enumerate(row_items):
-					x, y = column, row
-					for ind, coord in enumerate(self.x):
-						if y == self.y[ind] and x == self.x[ind]:
-							rotation_error = 1
+			for ind, coord in enumerate(self.x):
+				if matrix[self.y[ind]][self.x[ind]] == 1:
+					rotation_error = 1
+					print(rotation_error)
 			if rotation_error == 1:
-				rotation -= 1
+				self.rotation -= 1
+				self.update_shape()
 		except:
 			pass
 
@@ -232,6 +229,6 @@ while 1:
 		init += 500
 
 	screen.fill((0,0,0))
-	shape.draw_shape()
+	shape.draw_shape(area.matrix())
 	area.draw(shape, area.matrix())
 	pygame.display.flip()
