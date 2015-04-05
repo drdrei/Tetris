@@ -2,7 +2,6 @@ from random import *
 import pygame
 import sys
 
-
 class Shape:
 	def __init__(self, shape_id = 0):
 		self.x = []
@@ -21,25 +20,27 @@ class Shape:
 
 	def update_shape(self):
 		# I
-		if self.shape_id == 0 and self.rotation % 4 == 0 or self.rotation % 4 == 2:
+		if self.shape_id == 0 and self.rotation % 2 == 0:
 			self.shape =["00200",
-						 "00200",
-						 "00200",
-						 "00200",
-						 "00000"]
-		else:
+						   "00200",
+						   "00200",
+						   "00200",
+						   "00000"]
+		elif self.shape_id == 0 and self.rotation % 2 == 1:
 			self.shape =["00000",
 				 		 "00000",
 				 		 "22220",
 				 		 "00000",
 				 		 "00000"]
+
 		# Cube
 		if self.shape_id == 1:
 			self.shape =["00000",
-						"02200",
-						"02200",
-						"00000",
-						"00000",]
+						   "02200",
+						   "02200",
+						   "00000",
+						   "00000",]
+
 		# Backwards L
 		if self.shape_id == 2 and self.rotation % 4 == 0:
 			self.shape =["00200",
@@ -49,9 +50,9 @@ class Shape:
 						"00000"]
 		elif self.shape_id == 2 and self.rotation % 4 == 1:
 			self.shape =["00000",
-						"00000",
-						"22200",
 						"00200",
+						"00222",
+						"00000",
 						"00000"]
 		elif self.shape_id == 2 and self.rotation % 4 == 2:
 			self.shape =["00000",
@@ -61,9 +62,64 @@ class Shape:
 						"00200"]
 		elif self.shape_id == 2 and self.rotation % 4 == 3:
 			self.shape =["00000",
-						"00200",
-						"00222",
 						"00000",
+						"22200",
+						"00200",
+						"00000"]
+
+		# L
+		if self.shape_id == 3 and self.rotation % 4 == 0:
+			self.shape =["00200",
+						"00200",
+						"00220",
+						"00000",
+						"00000"]
+		elif self.shape_id == 3 and self.rotation % 4 == 1:
+			self.shape =["00000",
+						"00200",
+						"22200",
+						"00000",
+						"00000"]
+		elif self.shape_id == 3 and self.rotation % 4 == 2:
+			self.shape =["00000",
+						"00000",
+						"02200",
+						"00200",
+						"00200"]
+		elif self.shape_id == 3 and self.rotation % 4 == 3:
+			self.shape =["00000",
+						"00000",
+						"00222",
+						"00200",
+						"00000"]
+				
+
+		# Z
+		if self.shape_id == 4 and self.rotation % 2 == 0:
+			self.shape =["00000",
+						"02200",
+						"00220",
+						"00000",
+						"00000"]
+		elif self.shape_id == 4 and self.rotation % 2 == 1:
+			self.shape =["00000",
+						"00020",
+						"00220",
+						"00200",
+						"00000"]
+
+		# 5
+		elif self.shape_id == 5 and self.rotation % 2 == 0:
+			self.shape =["00000",
+						"00220",
+						"02200",
+						"00000",
+						"00000"]
+		elif self.shape_id == 5 and self.rotation % 2 == 1:
+			self.shape =["00000",
+						"00200",
+						"00220",
+						"00020",
 						"00000"]
 						
 		# clear x and y locations before adding new coordinates
@@ -75,7 +131,7 @@ class Shape:
 					self.y.append(row_ind + self.track_y)
 					self.x.append(col_ind-2 + self.track_x)
 
-	def draw_shape(self, matrix):
+	def draw_shape(self, matrix, screen):
 		self.update_shape()
 		self.rotation_test(matrix)
 		self.check_bounds()
@@ -174,89 +230,3 @@ class Shape:
 		except IndexError:
 			pass
 
-
-class Area:
-	def __init__(self, width, height):
-		self.width = width
-		self.height = height
-		self.area = []
-		array_builder = []
-		for row in range(int(self.height/20)):
-			for column in range(int(self.width/20)):
-				array_builder.append(0)
-			self.area.append(array_builder)
-			array_builder = []
-
-	def matrix(self):
-		return self.area
-
-	def draw(self, shape, matrix):
-		self.check_state(shape, matrix)
-		solid_color = (50,50,50)
-		solid = pygame.image.load("outside.png").convert()
-		solid.fill(solid_color,(1,1,18,18))
-		for row, row_items in enumerate(matrix):
-			for column, item in enumerate(row_items):
-				x, y = column, row
-				if item == 1:
-					screen.blit(solid,(x*20, y*20))
-
-	def check_state(self, shape, matrix):
-		if shape.state == 1:
-			for ind, i in enumerate(shape.x):
-				matrix[shape.y[ind]][shape.x[ind]] = 1
-
-
-def check_input():
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT: 
-			pygame.quit()
-			sys.exit()
-
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_UP:
-				shape.rotate(area.matrix())
-			if event.key == pygame.K_DOWN:
-				shape.test_y(area.matrix())
-				if shape.collision != 1:
-					shape.move_down(area.matrix())
-			if event.key == pygame.K_LEFT:
-				shape.move_left(area.matrix())
-			if event.key == pygame.K_RIGHT:
-				shape.move_right(area.matrix())
-			if event.key == pygame.K_SPACE:
-				pass
-	return area
-
-	
-################### MAIN ####################
-# some initialization procedures
-pygame.init()
-size = width, height = 200, 440
-screen = pygame.display.set_mode(size)
-pygame.display.set_caption('TETRIS')
-
-# creates a new shape: 0 is the shape id
-shape = Shape(randint(0,2))
-shape.update_shape()
-
-# build a matrix for from the width and height
-area = Area(width, height)
-# initialize time
-init = 1000
-
-while 1:
-	check_input()
-	time = pygame.time.get_ticks()
-
-	if shape.state == 1:
-		shape = Shape(randint(0,2))
-	
-	if init < time:
-		shape.move_down(area.matrix())
-		init += 500
-
-	screen.fill((0,0,0))
-	shape.draw_shape(area.matrix())
-	area.draw(shape, area.matrix())
-	pygame.display.flip()

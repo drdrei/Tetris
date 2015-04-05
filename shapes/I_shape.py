@@ -1,0 +1,1 @@
+SHAPE_COLOR="Red"
