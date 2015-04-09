@@ -166,6 +166,9 @@ class Shape:
 			for ind, y in enumerate(self.y):
 				if y > 1 and matrix[self.y[ind]][self.x[ind]] == 1 and self.track_x == 5 and self.track_y == 0:
 					self.game_state = 0
+			for i in range(3):
+				if sum(matrix[i]) > 0:
+					self.game_state = 0
 		except IndexError:
 			pass
 

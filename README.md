@@ -12,7 +12,7 @@ Comments:
 Notes/Bugs:
 - There's a bug where if a piece is moved to the right, it gets deactivated. Not sure why this happens
 - When demo starts the first block does not get placed optimally, (just falls to the middle)
-
+- sometimes the bot glitches out when it stack blocks very high on the right side
 
 Niko's To Do List:
 - read through the comments in Menu.py, make sure they are commented properly
