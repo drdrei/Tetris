@@ -70,19 +70,19 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('TETRIS')
 pygame.key.set_repeat(75)
 
-# build a matrix for from the width and height
-area = Area(width - 100, height)
-
-# initializes the shape queue (first number is current shape, second is upcoming)
-# randomizes the shape color
-shape_queue = []	
-for i in range(5):
-	shape_queue.append(randint(0,6))
-shape_color=(randint(1,255), randint(1,255), randint(1,255))
-
 while 1:
+	# build a matrix for from the width and height
+	area = Area(width - 100, height)
+
+	# initializes the shape queue (first number is current shape, second is upcoming)
+	# randomizes the shape color
+	shape_queue = []	
+	for i in range(5):
+		shape_queue.append(randint(0,6))
+	shape_color=(randint(1,255), randint(1,255), randint(1,255))
+
 	# creates a new shape: 0 is the shape id
-	shape = Shape(shape_queue[0])
+	shape = Shape(shape_color, shape_queue[0])
 
 	# init Heads up Display
 	hud = Hud(width, height)
@@ -116,7 +116,6 @@ while 1:
 			shape = Shape(shape_color,shape_queue[0], 0,5,0)
 			shape_color=(randint(1,255), randint(1,255), randint(1,255))
 
-		
 		# Delay (increase to increase the shape drop delay)
 		if init < time:			
 			shape.move_down(area.matrix())
@@ -127,18 +126,22 @@ while 1:
 		shape.draw_shape(area.matrix(), screen)
 		area.draw(shape, area.matrix(), screen)
 		area.print_game_info(screen)
-		next_shape=Shape(shape_color,shape_queue[1],0,12,0)
+		next_shape = Shape(shape_color,shape_queue[1],0,12,0)
 		next_shape.update_shape(area.matrix())
 		area.draw_next_shape(next_shape,screen)
 		hud.draw(screen)
 		pygame.display.flip()
-		
-	# Bot Loop
+
+	# first loop helps bot with the first iteration of the bot loop
+	first_loop = 1
+	# Main Bot loop
 	while menu.demo and shape.game_state:
 		check_input()
 		time = pygame.time.get_ticks() - start_time
 
-		if shape.state == 1:
+		next_shape = Shape(shape_color,shape_queue[1],0,12,0)
+
+		if shape.state == 1 or first_loop == 1:
 			next_shape.deactivate()
 			shape_queue.pop(0)
 			shape_queue.append(randint(0,6))
@@ -148,8 +151,8 @@ while 1:
 			location = bot.check_spot_score(shape, area.matrix())
 			shape.track_x = location[1]
 			shape.rotation = location[2]
+			first_loop = 0
 
-			
 		# Delay (increase to increase the shape drop delay)
 		if init < time:
 			shape.move_down(area.matrix())
@@ -160,7 +163,6 @@ while 1:
 		shape.draw_shape(area.matrix(), screen)
 		area.draw(shape, area.matrix(), screen)
 		area.print_game_info(screen)
-		next_shape=Shape(shape_color,shape_queue[1],0,12,0)
 		next_shape.update_shape(area.matrix())
 		area.draw_next_shape(next_shape,screen)
 		hud.draw(screen)
