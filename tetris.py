@@ -8,6 +8,8 @@ from Bot import Bot
 import pygame
 import sys
 
+# checks the user input and implements proper tests and movements in correspondance
+# with the user's input
 def check_input():
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT: 
@@ -33,40 +35,7 @@ def check_input():
 					area.draw(shape, area.matrix(), screen)
 	return area
 
-################### MAIN ####################
-# some initialization procedures
-pygame.init()
-
-bot = Bot()
-size = width, height = 300, 440
-screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('TETRIS')
-pygame.key.set_repeat(75)
-shape_queue = []
-
-	
-while 1:
-	for i in range(5):
-		shape_queue.append(randint(0,6))
-	
-	shape_color=(randint(1,255), randint(1,255), randint(1,255))
-	# build a matrix for from the width and height
-	area = Area(width - 100, height)
-
-	# creates a new shape: 0 is the shape id
-	shape = Shape(shape_queue[0])
-
-	# init Heads up Display
-	hud = Hud(width, height)
-
-	screen.fill((0,0,0))
-	hud.draw(screen)
-
-	menu=Menu(width,height)
-	menu.draw_menu(screen)
-	menu.update_menu(screen)
-	pygame.display.flip()
-
+def menu_input():
 	while not menu.gameStart:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT: 
@@ -89,9 +58,51 @@ while 1:
 					menu.gameStart=1	
 
 
-	init = 1000
+################### MAIN ####################
+# some initialization procedures
+pygame.init()
+bot = Bot()
+
+# initializes the screen, window name and the key repeater
+# if the key is held the key is repeated
+size = width, height = 300, 440
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption('TETRIS')
+pygame.key.set_repeat(75)
+
+# build a matrix for from the width and height
+area = Area(width - 100, height)
+
+# initializes the shape queue (first number is current shape, second is upcoming)
+# randomizes the shape color
+shape_queue = []	
+for i in range(5):
+	shape_queue.append(randint(0,6))
+shape_color=(randint(1,255), randint(1,255), randint(1,255))
+
+while 1:
+	# creates a new shape: 0 is the shape id
+	shape = Shape(shape_queue[0])
+
+	# init Heads up Display
+	hud = Hud(width, height)
+
+	# redraws the screen with the black background hud and menu
+	screen.fill((0,0,0))
+	hud.draw(screen)
+	menu=Menu(width,height)
+	menu.draw_menu(screen)
+	menu.update_menu(screen)
+	pygame.display.flip()
+
+	# moves the selector box around the menu
+	menu_input()
+
+	# initializes the ticker and starts moving the blocks after ~1s elapsed.
+	init = 1000 
 	start_time = pygame.time.get_ticks()
-	shape_color=(randint(1,255), randint(1,255), randint(1,255))
+
+	# Single Player Looop
 	while menu.singlePlayer and shape.game_state:
 		check_input()
 		time = pygame.time.get_ticks() - start_time
@@ -106,21 +117,23 @@ while 1:
 			shape_color=(randint(1,255), randint(1,255), randint(1,255))
 
 		
-		# Delay
+		# Delay (increase to increase the shape drop delay)
 		if init < time:			
 			shape.move_down(area.matrix())
-			init += 500
-
+			init += 300
+		
+		# redraws the screen to update everything
 		screen.fill((0,0,0))
 		shape.draw_shape(area.matrix(), screen)
 		area.draw(shape, area.matrix(), screen)
 		area.print_game_info(screen)
 		next_shape=Shape(shape_color,shape_queue[1],0,12,0)
-		next_shape.bot_update_shape()
+		next_shape.update_shape(area.matrix())
 		area.draw_next_shape(next_shape,screen)
 		hud.draw(screen)
 		pygame.display.flip()
 		
+	# Bot Loop
 	while menu.demo and shape.game_state:
 		check_input()
 		time = pygame.time.get_ticks() - start_time
@@ -132,30 +145,34 @@ while 1:
 			shape = Shape(shape_color, shape_queue[0])
 			shape_color=(randint(1,255), randint(1,255), randint(1,255))
 
-			
-		# Delay
-		if init < time:
-			shape.move_down(area.matrix())
 			location = bot.check_spot_score(shape, area.matrix())
 			shape.track_x = location[1]
 			shape.rotation = location[2]
-			init += 300
 
+			
+		# Delay (increase to increase the shape drop delay)
+		if init < time:
+			shape.move_down(area.matrix())
+			init += 0
+
+		# redraws the screen to update everything
 		screen.fill((0,0,0))
 		shape.draw_shape(area.matrix(), screen)
 		area.draw(shape, area.matrix(), screen)
 		area.print_game_info(screen)
 		next_shape=Shape(shape_color,shape_queue[1],0,12,0)
-		next_shape.bot_update_shape()
+		next_shape.update_shape(area.matrix())
 		area.draw_next_shape(next_shape,screen)
 		hud.draw(screen)
 		pygame.display.flip()
 
+	# displays the loss screen
 	gameOver=Gameover(width,height,area.score)
 	gameOver.draw_Gameover(screen)
 	gameOver.press_continue(screen)
 	pygame.display.flip()
 
+	# waits for a keystroke to move to main menu
 	while not gameOver.pressContinue:
 		gameOver.press_continue(screen)
 		for event in pygame.event.get():
@@ -165,6 +182,7 @@ while 1:
 				
 			if event.type == pygame.KEYDOWN:
 				gameOver.pressContinue=1
-			
+
+	# resets the game variables.
 	menu.reset_game()
 	

@@ -9,7 +9,7 @@ class Area:
 		self.lines_cleared = 0
 		self.score = 0
 
-
+		# builds the matrix from the width/height input.
 		array_builder = []
 		for row in range(int(self.height/20)):
 			for column in range(int(self.width/20)):
@@ -17,12 +17,15 @@ class Area:
 			self.area.append(array_builder)
 			array_builder = []
 
+	# function to return the current matrix to caller
 	def matrix(self):
 		return self.area
 
+	# function checks the shape state. If state is 1, it converts the shapes current
+	# coordinates to the matrix and redraws the matrix.
 	def draw(self, shape, matrix, screen):
 		self.check_state(shape, matrix)
-		solid_color = (50,50,50)
+		solid_color = (70,70,70)
 		solid = pygame.image.load("outside.png").convert()
 		solid.fill(solid_color,(1,1,18,18))
 		for row, row_items in enumerate(matrix):
@@ -30,13 +33,15 @@ class Area:
 				x, y = column, row
 				if item == 1:
 					screen.blit(solid,(x*20, y*20))
-					
+	
+	# function to draw the upcoming shape.					
 	def draw_next_shape(self,shape,screen):
 		for index, item in enumerate(shape.x):
 			screen.blit(shape.block, ((shape.x[index])*20, shape.y[index]*20))
 
 	# Checks whether the shape needs to become part of the matrix
-	# also checks if any lines need to be cleared.
+	# also checks if any lines need to be cleared. records the lines and computes the score
+	# finally it updates the score/lines cleared.
 	def check_state(self, shape, matrix):
 		if shape.state == 1:
 			for ind, i in enumerate(shape.x):
@@ -59,6 +64,8 @@ class Area:
 		if update_score == 1:
 			self.score += (self.lines_cleared - old_lines_cleared) * count * 100
 
+	# Gives the user updates on the progress of the game
+	# by shows the lines cleared and user's score on the right
 	def print_game_info(self, screen):
 		myfont = pygame.font.SysFont("monospace", 16)
 		font_color = (255,255,0)
@@ -94,9 +101,3 @@ class Area:
 		screen.blit(score_1, score_1_rect)
 		screen.blit(score_2, score_2_rect)
 		screen.blit(score, score_rect)
-
-
-
-
-
-

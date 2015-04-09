@@ -1,6 +1,7 @@
 from random import *
 import pygame
 
+# Hud class is used to draw the red outline of the heads-up display.
 class Hud:
 	def __init__(self, width, height):
 		self.width = width

@@ -19,14 +19,15 @@ class Menu:
 		
 		pygame.draw.rect(screen, background_color, (50,50,self.width-100,self.height-100),0)
 		
-		tetris_font=pygame.font.Font("Tetris.TTF",32)
+		tetris_font = pygame.font.Font("Tetris.TTF",32)
 		tetris_font.set_bold(1)
 		
 		label_1 = tetris_font.render("TETRIS",1, font_color)
 		label_1_rect = label_1.get_rect()
 		label_1_rect.center = (150, 100)
 		
-		tetris_font=pygame.font.SysFont("monospace", 10)
+		tetris_font = pygame.font.SysFont("monospace", 10)
+		
 		label_5 = tetris_font.render("By Niko Somos & Andrei Usenka",1, font_color)
 		label_5_rect = label_5.get_rect()
 		label_5_rect.center = (150, 350)
@@ -34,10 +35,10 @@ class Menu:
 		screen.blit(label_1, label_1_rect)
 		screen.blit(label_5, label_5_rect)
 		
-		
+	# undates the menu to display the 
 	def update_menu(self,screen):
 		
-		tetris_font=pygame.font.Font("Tetris.TTF",16)
+		tetris_font = pygame.font.Font("Tetris.TTF",16)
 		tetris_font.set_bold(0)
 		
 		singlePlayerBG=(255*(1-self.singlePlayer),255*(1-self.singlePlayer),255*(1-self.singlePlayer))
@@ -68,32 +69,36 @@ class Menu:
 		screen.blit(label_3, label_3_rect)
 		screen.blit(label_4, label_4_rect)
 
-		
+	# function to move the highlight box for single/demo/info display
 	def move_cursor(self,direction):
 		if self.demo:
-			if direction==1:
-				self.demo=0
-				self.singlePlayer=1
-			elif direction==-1:
+			if direction == 1:
+				self.demo = 0
+				self.singlePlayer = 1
+			elif direction == -1:
 				self.demo=0
 				self.info=1
+
 		elif self.singlePlayer:
-			if direction==1:
-				self.singlePlayer=0
-				self.info=1
-			elif direction==-1:
-				self.demo=1
-				self.singlePlayer=0
+			if direction == 1:
+				self.singlePlayer = 0
+				self.info = 1
+			elif direction == -1:
+				self.demo = 1
+				self.singlePlayer = 0
+
 		elif self.info:
-			if direction==1:
-				self.demo=1
-				self.info=0
-			elif direction==-1:
-				self.singlePlayer=1
-				self.info=0
-				
+			if direction == 1:
+				self.demo = 1
+				self.info = 0
+
+			elif direction == -1:
+				self.singlePlayer = 1
+				self.info = 0
+
+	# function to reset game initialization variables
 	def reset_game(self):
-		self.demo=0
-		self.singlePlayer=1
-		self.info=0
-		self.gameStart=0
+		self.demo = 0
+		self.singlePlayer = 1
+		self.info = 0
+		self.gameStart = 0

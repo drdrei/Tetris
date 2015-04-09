@@ -163,8 +163,8 @@ class Shape:
 					self.y.append(row_ind + self.track_y)
 					self.x.append(col_ind-2 + self.track_x)
 		try:
-			for ind, i in enumerate(self.x):
-				if matrix[self.y[ind]][self.x[ind]] == 1 and self.track_x == 5 and self.track_y == 0:
+			for ind, y in enumerate(self.y):
+				if y > 1 and matrix[self.y[ind]][self.x[ind]] == 1 and self.track_x == 5 and self.track_y == 0:
 					self.game_state = 0
 		except IndexError:
 			pass
@@ -280,24 +280,3 @@ class Shape:
 				self.update_shape(matrix)
 		except IndexError:
 			pass
-
-	def bot_update_shape(self, matrix=None):
-		self.shape_types()
-		# clear x and y locations before adding new coordinates
-		self.x = []
-		self.y = []
-		for row_ind, row in enumerate(self.shape):
-			for col_ind, item in enumerate(row):
-				if int(item) == 2:
-					self.y.append(row_ind + self.track_y)
-					self.x.append(col_ind-2 + self.track_x)
-
-
-
-
-
-
-
-
-
-
