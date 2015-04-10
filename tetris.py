@@ -35,6 +35,7 @@ def check_input():
 					area.draw(shape, area.matrix(), screen)
 	return area
 
+# updates the menu screen based on user inputs
 def menu_input():
 	while not menu.gameStart:
 		for event in pygame.event.get():
@@ -86,6 +87,7 @@ while 1:
 
 	# init Heads up Display
 	hud = Hud(width, height)
+	gameOver=Gameover(width,height,area.score)
 
 	# redraws the screen with the black background hud and menu
 	screen.fill((0,0,0))
@@ -168,15 +170,27 @@ while 1:
 		hud.draw(screen)
 		pygame.display.flip()
 
-	# displays the loss screen
-	gameOver=Gameover(width,height,area.score)
-	gameOver.draw_Gameover(screen)
-	gameOver.press_continue(screen)
-	pygame.display.flip()
 
-	# waits for a keystroke to move to main menu
-	while not gameOver.pressContinue:
+	# display the info screen
+	while menu.info and not menu.infoDone:
+		menu.draw_info(screen)
+		pygame.display.flip()
+
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT: 
+				pygame.quit()
+				sys.exit()
+				
+			if event.type == pygame.KEYDOWN:
+				menu.infoDone=1
+	
+	# displays the loss screen			
+	while not menu.info and not gameOver.pressContinue:
+		gameOver.draw_Gameover(screen)
 		gameOver.press_continue(screen)
+		pygame.display.flip()
+
+		# waits for a keystroke to move to main menu
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT: 
 				pygame.quit()

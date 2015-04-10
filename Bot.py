@@ -6,10 +6,30 @@ from operator import itemgetter
 
 # Main Bot class
 class Bot:
+	"""
+	Bot class with functions to choose the best
+	possible location for a bot to place the shape
+	
+	Once a shape loads into the game, the shape_id
+	is used to find a score for all rotations and 
+	x locations if the shape was to be dropped from
+	the top of the matrix.
+	
+	The score is calulated by the sum of differently
+	weighted factors. These factors are:
+		1)sum of heights or columns
+		2)amount of holes
+		3)lines completed
+		4)"bumpyness", the difference in heights on columns
+	
+	The score function returns the highest score 
+	along with the location and rotation of the shape
+	"""
+	
 	def __init__(self):
 		self.heightMod = -0.66569 
 		self.lineMod = 0.99275
-		self.holeMod = -0.46544
+		self.holeMod = -1
 		self.bumpyMod = -0.24077
 
 	# Main bot testing function
@@ -19,6 +39,7 @@ class Bot:
 		self.score = []
 		for rotation in range(0,4):
 			for column in range(0,10):
+				# use deepcopy to copy attributes but not affect original
 				test_matrix = copy.deepcopy(matrix)
 				test_shape = copy.deepcopy(shape)
 				test_shape.rotation = rotation

@@ -2,6 +2,19 @@ from random import *
 import pygame
 
 class Area:
+	"""
+	A class that stores the area of the screen
+	as well as a few statistic to be displayed
+	during the game.
+	
+	Initialize with the width and height of the
+	screen being used
+	
+	Has functions to build the game area as a
+	matrix as well as drawing to the screen.
+	"""
+	
+
 	def __init__(self, width, height):
 		self.width = width
 		self.height = height
@@ -25,9 +38,10 @@ class Area:
 	# coordinates to the matrix and redraws the matrix.
 	def draw(self, shape, matrix, screen):
 		self.check_state(shape, matrix)
-		solid_color = (70,70,70)
+		solid_color = (70,70,70) # color used for tetrominos set in the game area
 		solid = pygame.image.load("outside.png").convert()
 		solid.fill(solid_color,(1,1,18,18))
+		# draws the block to matrix
 		for row, row_items in enumerate(matrix):
 			for column, item in enumerate(row_items):
 				x, y = column, row
@@ -36,6 +50,7 @@ class Area:
 	
 	# function to draw the upcoming shape.					
 	def draw_next_shape(self,shape,screen):
+		# uses the x and y locations of shape to draw it
 		for index, item in enumerate(shape.x):
 			screen.blit(shape.block, ((shape.x[index])*20, shape.y[index]*20))
 

@@ -3,6 +3,14 @@ import pygame
 import sys
 
 class Shape:
+	"""
+	Class used to build and keep track of
+	shapes used in our game.
+	
+	Initialize with a color and optional
+	shape_id, rotation, x location, and 
+	y location.
+	"""
 	def __init__(self, color, shape_id = 0, rotation = 0, track_x = 5, track_y = 0):
 		self.x = []
 		self.y = []

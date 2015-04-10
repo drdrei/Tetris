@@ -2,13 +2,19 @@ from random import *
 import pygame
 
 class Gameover:
+	
+	"""
+	Class that is used for the drawing of the gameover 
+	screen.
+	"""
+	
 	def __init__(self, width, height, score):
 		self.width = width
 		self.height = height
 		self._score = score
 		self.pressContinue=0
 
-	# Draws the Gameover screen	and displays the score
+	# Draws the Gameover screen and displays the score
 	def draw_Gameover(self,screen):
 		background_color = (255,255,255)
 		font_color = (0,0,0)
